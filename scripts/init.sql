@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS empleados (
   nombre_completo VARCHAR(100) NOT NULL,
   ci VARCHAR(15) UNIQUE NOT NULL CHECK (ci ~ '^[0-9]{7,10}$'),
   telefono VARCHAR(15) NOT NULL,
-  email VARCHAR(100) CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]+$'),
+  email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$'
   direccion TEXT,
   foto_url VARCHAR(255),
   fecha_contratacion DATE NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS proveedores (
   nombre VARCHAR(100) NOT NULL,
   contacto VARCHAR(100) NOT NULL,
   telefono VARCHAR(15) NOT NULL,
-  email VARCHAR(100) NOT NULL CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]+$'),
+  email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$'
   direccion TEXT,
   logo_url VARCHAR(255),
   sitio_web VARCHAR(100),
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS clientes (
   id SERIAL PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
   telefono VARCHAR(15),
-  email VARCHAR(100) CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]+$'),
+  email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]+$'
   creado_en TIMESTAMP DEFAULT NOW(),
   actualizado_en TIMESTAMP DEFAULT NOW()
 );
