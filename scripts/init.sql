@@ -131,6 +131,12 @@ $$;
 INSERT INTO usuarios (nombre, rol, password_hash)
 VALUES ('admin', 'admin', '$2a$10$pU4jevAw6oikEP8N.nTtoOddydSja1/jMEuG3V0drOxc5EAuCYw4K')
 ON CONFLICT DO NOTHING;
+INSERT INTO usuarios (nombre, rol, password_hash)
+VALUES ('jhon', 'admin', '$2a$10$pU4jevAw6oikEP8N.nTtoOddydSja1/jMEuG3V0drOxc5EAuCYw4K')
+ON CONFLICT DO NOTHING;
+INSERT INTO usuarios (nombre, rol, password_hash)
+VALUES ('jhoss', 'admin', '$2a$10$pU4jevAw6oikEP8N.nTtoOddydSja1/jMEuG3V0drOxc5EAuCYw4K')
+ON CONFLICT DO NOTHING;
 
 -- Empleado asociado al usuario admin
 INSERT INTO empleados (
