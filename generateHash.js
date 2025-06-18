@@ -1,3 +1,3 @@
 const bcrypt = require('bcryptjs');
-const hash = bcrypt.hashSync("jhon", 10);
+const hash = bcrypt.hashSync("admin123", 10);
 console.log("Hash generado:", hash);

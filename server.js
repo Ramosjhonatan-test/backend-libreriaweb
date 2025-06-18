@@ -41,6 +41,8 @@ app.use('/api/detalle-ventas', require('./routes/detalleVentas.routes'));
 
 app.use('/api', dashboardRoutes);
 app.use('/api/reportes', require('./routes/reportes.routes'));
+app.use('/api', require('./routes/setup.routes'));
+
 
 
 
