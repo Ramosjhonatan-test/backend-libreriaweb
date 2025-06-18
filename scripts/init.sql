@@ -6,17 +6,17 @@
 CREATE TABLE IF NOT EXISTS usuarios (
   id SERIAL PRIMARY KEY,
   nombre VARCHAR(100) NOT NULL,
-  rol VARCHAR(20) CHECK (rol IN ('admin', 'vendedor')),
+  rol VARCHAR(20) NOT NULL CHECK (rol IN ('admin', 'vendedor')),
   password_hash VARCHAR(255) NOT NULL,
   intentos_login INT DEFAULT 0,
-  bloqueado BOOLEAN DEFAULT false
+  bloqueado BOOLEAN DEFAULT FALSE
 );
 
 -- Tabla de empleados
 CREATE TABLE IF NOT EXISTS empleados (
   id SERIAL PRIMARY KEY,
   nombre_completo VARCHAR(100) NOT NULL,
-  ci VARCHAR(15) UNIQUE NOT NULL CHECK (ci ~ '^[0-9]{7,10}$'),
+  ci VARCHAR(15) UNIQUE NOT NULL,
   telefono VARCHAR(15) NOT NULL,
   email VARCHAR(100),
   direccion TEXT,
@@ -52,8 +52,8 @@ CREATE TABLE IF NOT EXISTS productos (
     'libro', 'papeleria', 'escritura', 'manualidades', 
     'oficina', 'regalos', 'didacticos', 'limpieza'
   )),
-  precio DECIMAL(10,2) NOT NULL CHECK (precio > 0),
-  stock INTEGER DEFAULT 0 CHECK (stock >= 0),
+  precio DECIMAL(10,2) CHECK (precio > 0) NOT NULL,
+  stock INTEGER CHECK (stock >= 0) DEFAULT 0,
   codigo_barras VARCHAR(20) UNIQUE,
   descripcion TEXT,
   imagen_url VARCHAR(255),
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS detalle_ventas (
   id SERIAL PRIMARY KEY,
   venta_id INTEGER REFERENCES ventas(id) ON DELETE CASCADE,
   producto_id INTEGER REFERENCES productos(id) NOT NULL,
-  cantidad INTEGER NOT NULL CHECK (cantidad > 0),
+  cantidad INTEGER CHECK (cantidad > 0) NOT NULL,
   precio_unitario DECIMAL(10,2) NOT NULL,
   creado_en TIMESTAMP DEFAULT NOW(),
   actualizado_en TIMESTAMP DEFAULT NOW()
@@ -110,9 +110,18 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER IF NOT EXISTS trigger_actualizar_stock
-AFTER INSERT OR UPDATE OR DELETE ON detalle_ventas
-FOR EACH ROW EXECUTE FUNCTION actualizar_stock();
+-- Verificá que no exista antes de crear el trigger
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_trigger WHERE tgname = 'trigger_actualizar_stock'
+  ) THEN
+    CREATE TRIGGER trigger_actualizar_stock
+    AFTER INSERT OR UPDATE OR DELETE ON detalle_ventas
+    FOR EACH ROW EXECUTE FUNCTION actualizar_stock();
+  END IF;
+END;
+$$;
 
 -- ========================
 -- INSERTS INICIALES
@@ -120,7 +129,8 @@ FOR EACH ROW EXECUTE FUNCTION actualizar_stock();
 
 -- Usuario admin (contraseña: admin123)
 INSERT INTO usuarios (nombre, rol, password_hash)
-VALUES ('admin', 'admin', '$2a$10$pU4jevAw6oikEP8N.nTtoOddydSja1/jMEuG3V0drOxc5EAuCYw4K');
+VALUES ('admin', 'admin', '$2a$10$pU4jevAw6oikEP8N.nTtoOddydSja1/jMEuG3V0drOxc5EAuCYw4K')
+ON CONFLICT DO NOTHING;
 
 -- Empleado asociado al usuario admin
 INSERT INTO empleados (
@@ -138,4 +148,5 @@ VALUES (
   'administrador',
   TRUE,
   (SELECT id FROM usuarios WHERE nombre = 'admin')
-);
+)
+ON CONFLICT DO NOTHING;
