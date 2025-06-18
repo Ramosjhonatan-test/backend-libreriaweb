@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS empleados (
   nombre_completo VARCHAR(100) NOT NULL,
   ci VARCHAR(15) UNIQUE NOT NULL CHECK (ci ~ '^[0-9]{7,10}$'),
   telefono VARCHAR(15) NOT NULL,
-  email VARCHAR(100)
+  email VARCHAR(100),
   direccion TEXT,
   foto_url VARCHAR(255),
   fecha_contratacion DATE NOT NULL,
